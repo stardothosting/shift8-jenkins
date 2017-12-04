@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Shift8 GeoIP Location
- * Plugin URI: https://github.com/stardothosting/shift8-geoip
- * Description: Plugin that determines your geographic location based on your IP address and stores it in a session variable that can be accessed programically
- * Version: 1.03
+ * Plugin Name: Shift8 Jenkins Integration
+ * Plugin URI: https://github.com/stardothosting/shift8-jenkins
+ * Description: Plugin that allows you to trigger a Jenkins hook straight from the Wordpress interface. This is intended for end-users to trigger a "push" for jenkins to push a staging site (for example) to production
+ * Version: 1.00
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -12,7 +12,6 @@
 require_once(plugin_dir_path(__FILE__).'components/enqueuing.php' );
 require_once(plugin_dir_path(__FILE__).'components/settings.php' );
 require_once(plugin_dir_path(__FILE__).'components/functions.php' );
-require_once(plugin_dir_path(__FILE__).'components/classes.php' );
 
 
 // Admin welcome page
@@ -34,8 +33,8 @@ function shift8_geoip_settings_page() {
 <h2>Shift8 Geo IP Location Settings</h2>
 <?php if (is_admin()) { ?>
 <form method="post" action="options.php">
-    <?php settings_fields( 'shift8-geoip-settings-group' ); ?>
-    <?php do_settings_sections( 'shift8-geoip-settings-group' ); ?>
+    <?php settings_fields( 'shift8-jenkins-settings-group' ); ?>
+    <?php do_settings_sections( 'shift8-jenkins-settings-group' ); ?>
     <?php
 	$locations = get_theme_mod( 'nav_menu_locations' );
 	if (!empty($locations)) {
@@ -46,12 +45,12 @@ function shift8_geoip_settings_page() {
 		}
 	}
 	?>
-    <table class="form-table shift8-geoip-table">
+    <table class="form-table shift8-jenkins-table">
 	<tr valign="top">
 	<th scope="row">Core Settings</th>
 	</tr>
 	<tr valign="top">
-    <td><span id="shift8-geoip-notice">
+    <td><span id="shift8-jenkins-notice">
     </span></td>
 	</tr>
 	<tr valign="top">
