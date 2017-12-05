@@ -13,6 +13,8 @@ require_once(plugin_dir_path(__FILE__).'components/enqueuing.php' );
 require_once(plugin_dir_path(__FILE__).'components/settings.php' );
 require_once(plugin_dir_path(__FILE__).'components/functions.php' );
 
+global $shift8_jenkins_table_name;
+$shift8_jenkins_table_name = 'jenkins_activity_log';
 
 // Admin welcome page
 if (!function_exists('shift8_main_page')) {
@@ -27,10 +29,10 @@ if (!function_exists('shift8_main_page')) {
 }
 
 // Admin settings page
-function shift8_geoip_settings_page() {
+function shift8_jenkins_settings_page() {
 ?>
 <div class="wrap">
-<h2>Shift8 Geo IP Location Settings</h2>
+<h2>Shift8 Jenkins Settings</h2>
 <?php if (is_admin()) { ?>
 <form method="post" action="options.php">
     <?php settings_fields( 'shift8-jenkins-settings-group' ); ?>
@@ -40,45 +42,55 @@ function shift8_geoip_settings_page() {
 	if (!empty($locations)) {
 		foreach ($locations as $locationId => $menuValue) {
 			if (has_nav_menu($locationId)) {
-				$shift8_geoip_menu = $locationId;
+				$shift8_jenkins_menu = $locationId;
 			}
 		}
 	}
 	?>
     <table class="form-table shift8-jenkins-table">
 	<tr valign="top">
-	<th scope="row">Core Settings</th>
-	</tr>
-	<tr valign="top">
     <td><span id="shift8-jenkins-notice">
+    <?php settings_errors('shift8_jenkins_url'); ?>
     </span></td>
 	</tr>
 	<tr valign="top">
-	<td>Enable GEO IP Location : </td>
-	<td>
-	<?php 
-	if (esc_attr( get_option('shift8_geoip_enabled') ) == 'on') { 
-		$enabled_checked = "checked";
-	} else {
-		$enabled_checked = "";
-	}
-	?>
-    <label class="switch">
-    <input type="checkbox" name="shift8_geoip_enabled" <?php echo $enabled_checked; ?>>
-    <div class="slider round"></div>
-    </label>
-	</td>
+    <th scope="row">Jenkins Build Trigger URL : </th>
+    <td><input type="text" name="shift8_jenkins_url" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_jenkins_url'))) ? '' : esc_attr(get_option('shift8_jenkins_url'))); ?>"></td>
+	</tr>
+	<tr valign="top">
+    <th scope="row">Jenkins Build Username : </th>
+    <td><input type="text" name="shift8_jenkins_username" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_jenkins_username'))) ? '' : esc_attr(get_option('shift8_jenkins_username'))); ?>"></td>
+	</tr>
+	<tr valign="top">
+    <th scope="row">Jenkins Build API Token : </th>
+    <td><input type="text" name="shift8_jenkins_api" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_jenkins_api'))) ? '' : esc_attr(get_option('shift8_jenkins_api'))); ?>"></td>
 	</tr>
 	</table>
     <?php submit_button(); ?>
-</form>
+	</form>
 </div>
+	<div class="shift8-jenkins-button-container">
+	<a id="shift8-jenkins-push" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_jenkins_push'), 'process'); ?>"><button class="shift8-jenkins-button">Push to Production</button></a>
+	<div class="shift8-jenkins-push-container">
+	<div class="shift8-jenkins-push-progress"></div>
+	</div>
+	</div>
+	<div class="shift8-jenkins-activity-log-container">
+		<h3>Activity Log</h3>
+	<div class="shift8-jenkins-scrollabletextbox">
+		<ul>
+		<?php
+		$activity_log_array = shift8_jenkins_get_activity_log();
+		if ($activity_log_array) {
+			foreach ($activity_log_array as $activity_log) {
+				echo '<li>' . $activity_log->user_name . ' ' . $activity_log->activity . ' on ' . $activity_log->activity_date . '</li>';
+			}
+		}
+		?>
+		</ul>
+	</div></div>
 <?php 
 	} // is_admin
 }
 
-// add the menu if its switched on
-if (esc_attr( get_option('shift8_geoip_enabled') ) == 'on') {
-	add_action('wp_footer', 'add_shift8_geoip_menu', 1);
-}
 
