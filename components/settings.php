@@ -48,11 +48,13 @@ function shift8_jenkins_create_menu() {
 function register_shift8_jenkins_settings() {
     //register our settings
     register_setting( 'shift8-jenkins-settings-group', 'shift8_jenkins_url', 'shift8_jenkins_url_validate' );
+    register_setting( 'shift8-jenkins-settings-group', 'shift8_jenkins_user', 'shift8_jenkins_user_validate' );
+    register_setting( 'shift8-jenkins-settings-group', 'shift8_jenkins_api', 'shift8_jenkins_api_validate' );
 }
 
-// Validate URL input option
+// Validate Input for Admin options
 function shift8_jenkins_url_validate($data){
-	if(!filter_var(esc_attr(get_option('shift8_jenkins_url'), FILTER_FLAG_QUERY_REQUIRED))) {
+	if(filter_var($data, FILTER_VALIDATE_URL,FILTER_FLAG_QUERY_REQUIRED)) {
    		return $data;
    	} else {
    		add_settings_error(
@@ -61,15 +63,39 @@ function shift8_jenkins_url_validate($data){
             'You did not enter a valid URL for the Jenkins push',
             'error');
    	}
-
 }
+
+function shift8_jenkins_user_validate($data){
+	if(filter_var($data, FILTER_SANITIZE_STRING)) {
+   		return $data;
+   	} else {
+   		add_settings_error(
+            'shift8_jenkins_user',
+            'shift8-jenkins-notice',
+            'You did not enter a valid string for the username field',
+            'error');
+   	}
+}
+
+function shift8_jenkins_api_validate($data){
+	if(filter_var($data, FILTER_SANITIZE_STRING)) {
+   		return $data;
+   	} else {
+   		add_settings_error(
+            'shift8_jenkins_api',
+            'shift8-jenkins-notice',
+            'You did not enter a valid string for the API field',
+            'error');
+   	}
+}
+
 // Validate admin options
 function shift8_jenkins_check_options() {
     // If enabled is not set
-    if(esc_attr(!empty(get_option('shift8_jenkins_url') ))) {
-    	return true;
-    } else {
-    	// If none of the above conditions match, return true
-    	return false;
-    }
+    if(empty(esc_attr(get_option('shift8_jenkins_url') ))) return false;
+    if(empty(esc_attr(get_option('shift8_jenkins_api') ))) return false;
+    if(empty(esc_attr(get_option('shift8_jenkins_user') ))) return false;
+
+    return true;
+
 }

@@ -39,17 +39,24 @@ function shift8_jenkins_poll() {
         global $shift8_jenkins_table_name;
         $current_user = wp_get_current_user();
 
+        $jenkins_user = esc_attr(get_option('shift8_jenkins_user'));
+        $jenkins_api = esc_attr(get_option('shift8_jenkins_api'));
+        // Set headers for WP Remote get
+        $headers = array(
+            'Content-type: application/json',
+            'Authorization' => 'Basic ' . base64_encode($jenkins_user . ':' . $jenkins_api),
+        );
+
         // Use WP Remote Get to poll jenkins
         $response = wp_remote_get( esc_attr(get_option('shift8_jenkins_url')),
             array(
+                'headers' => $headers,
                 'httpversion' => '1.1',
                 'timeout' => '10',
             )
         );
-        var_dump($response);
-        /*if (is_array($response) && !empty($response['body'])) {
+        if (is_array($response) && $response['response']['code'] == '200') {
             echo $date->format('Y-m-d H:i:s') . ' / ' . $current_user->user_login . ' : Pushed to production';
-            echo $response['body'];
             $wpdb->insert( 
                 $wpdb->prefix . $shift8_jenkins_table_name,
                 array( 
@@ -58,8 +65,13 @@ function shift8_jenkins_poll() {
                 )
             );
         } else {
-            echo 'error_detected';
-        } */
+            echo 'error_detected : ';
+            if (is_array($response['response'])) {
+                echo $response['response']['code'] . ' - ' . $response['response']['message'];
+            } else {
+                echo 'unknown';
+            }
+        } 
     } 
 }
 

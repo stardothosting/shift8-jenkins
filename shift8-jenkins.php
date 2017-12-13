@@ -50,7 +50,11 @@ function shift8_jenkins_settings_page() {
     <table class="form-table shift8-jenkins-table">
 	<tr valign="top">
     <td><span id="shift8-jenkins-notice">
-    <?php settings_errors('shift8_jenkins_url'); ?>
+    <?php 
+    settings_errors('shift8_jenkins_url');
+    settings_errors('shift8_jenkins_user');
+    settings_errors('shift8_jenkins_api'); 
+    ?>
     </span></td>
 	</tr>
 	<tr valign="top">
@@ -59,7 +63,7 @@ function shift8_jenkins_settings_page() {
 	</tr>
 	<tr valign="top">
     <th scope="row">Jenkins Build Username : </th>
-    <td><input type="text" name="shift8_jenkins_username" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_jenkins_username'))) ? '' : esc_attr(get_option('shift8_jenkins_username'))); ?>"></td>
+    <td><input type="text" name="shift8_jenkins_user" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_jenkins_user'))) ? '' : esc_attr(get_option('shift8_jenkins_user'))); ?>"></td>
 	</tr>
 	<tr valign="top">
     <th scope="row">Jenkins Build API Token : </th>
