@@ -8,7 +8,7 @@
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Plugin that allows you to trigger a Jenkins hook straight from the Wordpress interface. This is intended for end-users to trigger a "push" for jenkins to push a staging site (for example) to production
+Plugin that allows you to trigger a Jenkins hook straight from the Wordpress interface. This is intended for end-users to trigger a "push" for jenkins to push a staging site to production (for example).
 
 == Want to see the plugin in action? ==
 
