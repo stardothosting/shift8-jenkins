@@ -1,7 +1,7 @@
-=== Shift8 GEO IP Location ===
+=== Shift8 Jenkins Integration ===
 * Contributors: shift8
 * Donate link: https://www.shift8web.ca
-* Tags: geolocation, geo location, geographic location, ip geolocation, ip address location, ip location, ip address location, ip address, ip tracking, geo ip location
+* Tags: jenkins, wordpress, wordpress autopation, staging wordpress, staging, push, production push, jenkins push
 * Requires at least: 3.0.1
 * Tested up to: 4.8
 * Stable tag: 1.03
