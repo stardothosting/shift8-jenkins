@@ -13,7 +13,7 @@ function shift8_jenkins_register_activity_log_table() {
           log_id bigint(20) unsigned NOT NULL auto_increment,
           user_name varchar(60) NOT NULL default '0',
           activity varchar(20) NOT NULL default 'updated',
-          activity_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          activity_date TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
           PRIMARY KEY  (log_id),
           KEY user_id (user_name)
      ) $charset_collate; ";
