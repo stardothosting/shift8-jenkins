@@ -56,12 +56,14 @@ function shift8_jenkins_poll() {
             )
         );
         if (is_array($response) && $response['response']['code'] == '201') {
-            echo date('Y-m-d H:i:s') . ' / ' . $current_user->user_login . ' : Pushed to production';
+            $date = date('Y-m-d H:i:s');
+            echo $date . ' / ' . $current_user->user_login . ' : Pushed to production';
             $wpdb->insert( 
                 $wpdb->prefix . $shift8_jenkins_table_name,
                 array( 
                     'user_name' => $current_user->user_login,
                     'activity' => 'pushed to production',
+                    'activity_date' => $date,
                 )
             );
         } else {
