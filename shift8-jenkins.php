@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 Jenkins Integration
  * Plugin URI: https://github.com/stardothosting/shift8-jenkins
  * Description: Plugin that allows you to trigger a Jenkins hook straight from the Wordpress interface. This is intended for end-users to trigger a "push" for jenkins to push a staging site (for example) to production
- * Version: 1.00
+ * Version: 1.01
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
