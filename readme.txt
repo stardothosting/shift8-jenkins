@@ -3,7 +3,7 @@
 * Donate link: https://www.shift8web.ca
 * Tags: jenkins, wordpress, wordpress automation, staging wordpress, staging, push, production push, jenkins push, wordpress deploy, wordpress build, build, deployment, deploy
 * Requires at least: 3.0.1
-* Tested up to: 5.0.2
+* Tested up to: 5.2.2
 * Stable tag: 1.03
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
