@@ -1,17 +1,17 @@
 [
     {
         "name": "nesbot/carbon",
-        "version": "2.46.0",
-        "version_normalized": "2.46.0.0",
+        "version": "2.40.0",
+        "version_normalized": "2.40.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/briannesbitt/Carbon.git",
-            "reference": "2fd2c4a77d58a4e95234c8a61c5df1f157a91bf4"
+            "reference": "6c7646154181013ecd55e80c201b9fd873c6ee5d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/2fd2c4a77d58a4e95234c8a61c5df1f157a91bf4",
-            "reference": "2fd2c4a77d58a4e95234c8a61c5df1f157a91bf4",
+            "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/6c7646154181013ecd55e80c201b9fd873c6ee5d",
+            "reference": "6c7646154181013ecd55e80c201b9fd873c6ee5d",
             "shasum": ""
         },
         "require": {
@@ -26,11 +26,11 @@
             "kylekatarnls/multi-tester": "^2.0",
             "phpmd/phpmd": "^2.9",
             "phpstan/extension-installer": "^1.0",
-            "phpstan/phpstan": "^0.12.54",
-            "phpunit/phpunit": "^7.5.20 || ^8.5.14",
+            "phpstan/phpstan": "^0.12.35",
+            "phpunit/phpunit": "^7.5 || ^8.0",
             "squizlabs/php_codesniffer": "^3.4"
         },
-        "time": "2021-02-24T17:30:44+00:00",
+        "time": "2020-09-11T19:00:58+00:00",
         "bin": [
             "bin/carbon"
         ],
