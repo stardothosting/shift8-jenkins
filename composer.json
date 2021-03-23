@@ -1,0 +1,15 @@
+{
+    "name": "shift8web/shift8-jenkins",
+    "description": "Wordpress plugin that allows you to trigger a Jenkins hook straight from the Wordpress interface",
+    "type": "wordpress-plugin",
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "stardothosting",
+            "email": "admin@stardothosting.com"
+        }
+    ],
+    "require": {
+        "nesbot/carbon": "^2.40"
+    }
+}

@@ -3,8 +3,8 @@
 * Donate link: https://www.shift8web.ca
 * Tags: jenkins, wordpress, wordpress automation, staging wordpress, staging, push, production push, jenkins push, wordpress deploy, wordpress build, build, deployment, deploy
 * Requires at least: 3.0.1
-* Tested up to: 5.5.1
-* Stable tag: 1.04
+* Tested up to: 5.7
+* Stable tag: 2.0.1
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -58,3 +58,7 @@ You should monitor the Jenkins log to see if it is able to hit the site. Also mo
 
 ### 1.04
 * Wordpress 5.5 compatibility
+
+### 2.0.1
+* Wordpress 5.7 compatibility
+* Ability to schedule push trigger with WP Cron

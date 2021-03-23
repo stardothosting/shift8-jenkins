@@ -3,12 +3,18 @@
  * Plugin Name: Shift8 Jenkins Integration
  * Plugin URI: https://github.com/stardothosting/shift8-jenkins
  * Description: Plugin that allows you to trigger a Jenkins hook straight from the Wordpress interface. This is intended for end-users to trigger a "push" for jenkins to push a staging site (for example) to production
- * Version: 1.04
+ * Version: 2.0.1
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
  */
 
+// Composer dependencies
+if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
+    require __DIR__ . '/vendor/autoload.php';
+}
+
+require_once(plugin_dir_path(__FILE__).'shift8-jenkins-rules.php' );
 require_once(plugin_dir_path(__FILE__).'components/enqueuing.php' );
 require_once(plugin_dir_path(__FILE__).'components/settings.php' );
 require_once(plugin_dir_path(__FILE__).'components/functions.php' );
@@ -33,7 +39,7 @@ function shift8_jenkins_settings_page() {
 ?>
 <div class="wrap">
 <h2>Shift8 Jenkins Settings</h2>
-<?php if (is_admin()) { ?>
+<?php if (current_user_can('administrator')) { ?>
 <form method="post" action="options.php">
     <?php settings_fields( 'shift8-jenkins-settings-group' ); ?>
     <?php do_settings_sections( 'shift8-jenkins-settings-group' ); ?>
@@ -74,10 +80,25 @@ function shift8_jenkins_settings_page() {
 	</form>
 </div>
 	<div class="shift8-jenkins-button-container">
-	<a id="shift8-jenkins-push" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_jenkins_push'), 'process'); ?>"><button class="shift8-jenkins-button">Push to Production</button></a>
-	<div class="shift8-jenkins-push-container">
-	<div class="shift8-jenkins-push-progress"></div>
+		<div class="shift8-jenkins-push-button">
+			<a id="shift8-jenkins-push" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_jenkins_push&schedule=immediate'), 'process'); ?>"><button class="shift8-jenkins-button">Push to Production</button></a>
+		</div>
+	<div class="shift8-jenkins-box">
+		  <select id="shift8-jenkins-push-schedule" name="shift8_jenkins_push_schedule">
+		    <option value="immediate">Push Immediately</option>
+		    <option value="tonight">Tonight</option>
+		    <option value="tomorrow">Tomorrow</option>
+		    <option value="two_days">Two Days from now</option>
+		    <option value="three_days">Three Days from now</option>
+		    <option value="four_days">Four Days from now</option>
+		    <option value="five_days">Five Days from now</option>
+		    <option value="six_days">Six Days from now</option>
+		    <option value="seven_days">Seven Days from now</option>
+		  </select>
 	</div>
+		<div class="shift8-jenkins-push-container">
+			<div class="shift8-jenkins-push-progress"></div>
+		</div>
 	</div>
 	<div class="shift8-jenkins-activity-log-container">
 		<h3>Activity Log</h3>

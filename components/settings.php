@@ -1,4 +1,27 @@
 <?php
+/**
+ * Shift8 Jenkins Settings
+ *
+ * Declaration of plugin settings used throughout
+ *
+ */
+
+if ( !defined( 'ABSPATH' ) ) {
+    die();
+}
+
+add_action('admin_head', 'shift8_jenkins_custom_favicon');
+function shift8_jenkins_custom_favicon() {
+  echo '
+    <style>
+    .dashicons-shift8 {
+        background-image: url("'. plugin_dir_url(dirname(__FILE__)) .'/img/shift8pluginicon.png");
+        background-repeat: no-repeat;
+        background-position: center; 
+    }
+    </style>
+  '; 
+}
 
 // Create activity log table
 add_action( 'init', 'shift8_jenkins_register_activity_log_table', 1 );
@@ -37,7 +60,7 @@ add_action('admin_menu', 'shift8_jenkins_create_menu');
 function shift8_jenkins_create_menu() {
         //create new top-level menu
         if ( empty ( $GLOBALS['admin_page_hooks']['shift8-settings'] ) ) {
-                add_menu_page('Shift8 Settings', 'Shift8', 'administrator', 'shift8-settings', 'shift8_main_page' , 'dashicons-building' );
+                add_menu_page('Shift8 Settings', 'Shift8', 'administrator', 'shift8-settings', 'shift8_main_page' , 'dashicons-shift8' );
         }
         add_submenu_page('shift8-settings', 'Jenkins Settings', 'Jenkins Settings', 'manage_options', __FILE__.'/custom', 'shift8_jenkins_settings_page');
         //call register settings function
@@ -51,6 +74,26 @@ function register_shift8_jenkins_settings() {
     register_setting( 'shift8-jenkins-settings-group', 'shift8_jenkins_user', 'shift8_jenkins_user_validate' );
     register_setting( 'shift8-jenkins-settings-group', 'shift8_jenkins_api', 'shift8_jenkins_api_validate' );
 }
+
+// Uninstall hook
+function shift8_jenkins_uninstall_hook() {
+  // Delete setting values
+  delete_option('shift8_jenkins_url');
+  delete_option('shift8_jenkins_user');
+  delete_option('shift8_jenkins_api');
+
+  // Clear Cron tasks
+  wp_clear_scheduled_hook( 'shift8_jenkins_schedule_poll' );
+
+}
+register_uninstall_hook( S8JENKINS_FILE, 'shift8_jenkins_uninstall_hook' );
+
+// Deactivation hook
+function shift8_jenkins_deactivation() {
+  // Clear Cron tasks
+  wp_clear_scheduled_hook( 'shift8_jenkins_schedule_poll' );
+}
+register_deactivation_hook( S8JENKINS_FILE, 'shift8_jenkins_deactivation' );
 
 // Validate Input for Admin options
 function shift8_jenkins_url_validate($data){
@@ -98,4 +141,17 @@ function shift8_jenkins_check_options() {
 
     return true;
 
+}
+
+// Force cron schedule change if detected
+function shift8_jenkins_cron_validate($data){
+  $cron_schedule = esc_attr($data);
+  if (get_transient(S8JENKINS_CRON_SCHEDULE) && get_transient(S8JENKINS_CRON_SCHEDULE) === $cron_schedule) {
+    set_transient(S8JENKINS_CRON_SCHEDULE, $cron_schedule, 0);
+    return $cron_schedule;
+  } else {
+    set_transient(S8JENKINS_CRON_SCHEDULE, $cron_schedule, 0);
+    wp_clear_scheduled_hook( 'shift8_jenkins_cron_hook' );
+    return $cron_schedule;
+  }
 }

@@ -11,6 +11,14 @@
 .shift8-jenkins-button-container {
 	text-align:center;
 	margin:0 auto;
+    width:50%;
+    height:50px;
+    padding:10px;
+}
+.shift8-jenkins-push-button {
+    width:50%;
+    height:50px;
+    float:left;
 }
 .shift8-jenkins-table input {
     width:100%;
@@ -28,4 +36,35 @@
 }
 .shift8-jenkins-scrollabletextbox li {
     font-weight:bold;
+}
+
+.shift8-jenkins-box {
+    margin-left:5%;
+    height:50px;
+}
+
+.shift8-jenkins-box select {
+  background: #16a085 !important;
+  color: white;
+  padding: 12px;
+  width: 250px;
+  border: none;
+  font-size: 16px;
+  -webkit-appearance: button;
+  appearance: button;
+  outline: none;
+  border-radius:0;
+  height:47px;
+}
+.shift8-jenkins-box select:hover, .shift8-jenkins-box select:active, .shift8-jenkins-box select:focus, .shift8-jenkins-box select:visited {
+    color: #fff !important;
+}
+
+.shift8-jenkins-box:hover::before {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.shift8-jenkins-box select option {
+  padding: 30px;
 }
