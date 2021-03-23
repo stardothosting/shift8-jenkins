@@ -15,10 +15,10 @@ use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
-use Carbon\Exceptions\UnitException;
 use Closure;
 use DateTime;
 use DateTimeImmutable;
+use InvalidArgumentException;
 
 /**
  * Trait Converter.
@@ -28,7 +28,7 @@ use DateTimeImmutable;
  *
  * Depends on the following methods:
  *
- * @method static copy()
+ * @method Carbon|CarbonImmutable copy()
  */
 trait Converter
 {
@@ -211,7 +211,7 @@ trait Converter
                 return 'H:i:s.u';
         }
 
-        throw new UnitException('Precision unit expected among: minute, second, millisecond and microsecond.');
+        throw new InvalidArgumentException('Precision unit expected among: minute, second, millisecond and microsecond.');
     }
 
     /**
@@ -388,24 +388,16 @@ trait Converter
     /**
      * Format the instance as RFC3339
      *
-     * @param bool $extended
-     *
      * @example
      * ```
-     * echo Carbon::now()->toRfc3339String() . "\n";
-     * echo Carbon::now()->toRfc3339String(true) . "\n";
+     * echo Carbon::now()->toRfc3339String();
      * ```
      *
      * @return string
      */
-    public function toRfc3339String($extended = false)
+    public function toRfc3339String()
     {
-        $format = DateTime::RFC3339;
-        if ($extended) {
-            $format = DateTime::RFC3339_EXTENDED;
-        }
-
-        return $this->rawFormat($format);
+        return $this->rawFormat(DateTime::RFC3339);
     }
 
     /**
