@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 Jenkins Integration
  * Plugin URI: https://github.com/stardothosting/shift8-jenkins
  * Description: Plugin that allows you to trigger a Jenkins hook straight from the Wordpress interface. This is intended for end-users to trigger a "push" for jenkins to push a staging site (for example) to production
- * Version: 2.0.2
+ * Version: 2.0.3
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -69,8 +69,8 @@ function shift8_jenkins_settings_page() {
     <td><input type="text" name="shift8_jenkins_user" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_jenkins_user'))) ? '' : esc_attr(get_option('shift8_jenkins_user'))); ?>"></td>
 	</tr>
 	<tr valign="top">
-    <th scope="row">Jenkins Build API Token : </th>
-    <td><input type="text" name="shift8_jenkins_api" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_jenkins_api'))) ? '' : esc_attr(get_option('shift8_jenkins_api'))); ?>"></td>
+    <th scope="row">Jenkins Build API Key : </th>
+    <td><input type="password" name="shift8_jenkins_api" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_jenkins_api'))) ? '' : esc_attr(get_option('shift8_jenkins_api'))); ?>"></td>
 	</tr>
 	</table>
     <?php submit_button(); ?>
