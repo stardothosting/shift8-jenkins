@@ -55,6 +55,7 @@
   outline: none;
   border-radius:0;
   height:47px;
+  line-height:1 !important;
 }
 .shift8-jenkins-box select:hover, .shift8-jenkins-box select:active, .shift8-jenkins-box select:focus, .shift8-jenkins-box select:visited {
     color: #fff !important;
