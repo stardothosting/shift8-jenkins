@@ -28,25 +28,29 @@ add_action( 'init', 'shift8_jenkins_register_activity_log_table', 1 );
 add_action( 'switch_blog', 'shift8_jenkins_register_activity_log_table' );
  
 function shift8_jenkins_register_activity_log_table() {
+  $installed_ver = get_option( "shift8_jenkins_db_version" );
+  if ( !$installed_ver || $installed_ver != S8JENKINS_DB_VERSION ) {
     global $wpdb;
-    global $shift8_jenkins_table_name;
 
-    $wpdb->$shift8_jenkins_table_name = $wpdb->prefix . $shift8_jenkins_table_name;
-	$sql_create_table = "CREATE TABLE {$wpdb->$shift8_jenkins_table_name} (
-          log_id bigint(20) unsigned NOT NULL auto_increment,
-          user_name varchar(60) NOT NULL default '0',
-          activity varchar(20) NOT NULL default 'updated',
-          activity_date TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-          PRIMARY KEY  (log_id),
-          KEY user_id (user_name)
-     ) $charset_collate; ";
+    $wpdb->S8JENKINS_TABLE = $wpdb->prefix . S8JENKINS_TABLE;
+  	$sql_create_table = "CREATE TABLE {$wpdb->S8JENKINS_TABLE} (
+            log_id bigint(20) unsigned NOT NULL auto_increment,
+            user_name varchar(60) NOT NULL default '0',
+            activity varchar(255) NOT NULL default 'updated',
+            activity_date TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY  (log_id),
+            KEY user_id (user_name)
+       ) $charset_collate; ";
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	dbDelta( $sql_create_table );
+  	dbDelta( $sql_create_table );
+    update_option("shift8_jenkins_db_version", S8JENKINS_DB_VERSION);
+  }
 }
 
+// Trigger create tables on plugin activation
 function shift8_jenkins_create_tables() {
-    // Code for creating a table goes here
-    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+  // Code for creating a table goes here
+  require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	global $wpdb;
 	global $charset_collate;
 	// Call this manually as we may have missed the init hook
@@ -54,6 +58,15 @@ function shift8_jenkins_create_tables() {
 }
 // Create tables on plugin activation
 register_activation_hook( __FILE__, 'shift8_jenkins_create_tables' );
+
+// Trigger create table check in case the db version changes
+function shift8_jenkins_update_db_check() {
+    if ( get_site_option( "shift8_jenkins_db_version" ) != S8JENKINS_DB_VERSION ) {
+        shift8_jenkins_register_activity_log_table();
+    }
+}
+add_action( 'plugins_loaded', 'shift8_jenkins_update_db_check' );
+
 
 // create custom plugin settings menu
 add_action('admin_menu', 'shift8_jenkins_create_menu');
@@ -73,6 +86,7 @@ function register_shift8_jenkins_settings() {
     register_setting( 'shift8-jenkins-settings-group', 'shift8_jenkins_url', 'shift8_jenkins_url_validate' );
     register_setting( 'shift8-jenkins-settings-group', 'shift8_jenkins_user', 'shift8_jenkins_user_validate' );
     register_setting( 'shift8-jenkins-settings-group', 'shift8_jenkins_api', 'shift8_jenkins_api_validate' );
+    register_setting( 'shift8-jenkins-settings-group', 'shift8_jenkins_db_version', 'shift8_jenkins_db_version' );
 }
 
 // Uninstall hook
@@ -83,7 +97,14 @@ function shift8_jenkins_uninstall_hook() {
   delete_option('shift8_jenkins_api');
 
   // Clear Cron tasks
-  wp_clear_scheduled_hook( 'shift8_jenkins_schedule_poll' );
+  wp_unschedule_hook( 'shift8_jenkins_schedule_poll' );
+
+  // Delete custom table
+  global $wpdb;
+  $table_name = $wpdb->prefix . S8JENKINS_TABLE;
+  $sql = "DROP TABLE IF EXISTS $table_name";
+  $wpdb->query($sql);
+  delete_option('shift8_jenkins_db_version');
 
 }
 register_uninstall_hook( S8JENKINS_FILE, 'shift8_jenkins_uninstall_hook' );
@@ -91,7 +112,7 @@ register_uninstall_hook( S8JENKINS_FILE, 'shift8_jenkins_uninstall_hook' );
 // Deactivation hook
 function shift8_jenkins_deactivation() {
   // Clear Cron tasks
-  wp_clear_scheduled_hook( 'shift8_jenkins_schedule_poll' );
+  wp_unschedule_hook( 'shift8_jenkins_schedule_poll' );
 }
 register_deactivation_hook( S8JENKINS_FILE, 'shift8_jenkins_deactivation' );
 

@@ -92,10 +92,6 @@ function shift8_jenkins_push() {
 
 // Handle the actual jenkins GET
 function shift8_jenkins_poll($user_pushed) {
-
-    global $wpdb;
-    global $shift8_jenkins_table_name;
-
     $jenkins_user = esc_attr(get_option('shift8_jenkins_user'));
     $jenkins_api = esc_attr(get_option('shift8_jenkins_api'));
     // Set headers for WP Remote get
@@ -115,14 +111,7 @@ function shift8_jenkins_poll($user_pushed) {
     if (is_array($response) && $response['response']['code'] == '201') {
         $date = date('Y-m-d H:i:s');
         echo $date . ' / ' . $user_pushed->user_login . ' : Pushed to production';
-        $wpdb->insert( 
-            $wpdb->prefix . $shift8_jenkins_table_name,
-            array( 
-                'user_name' => $user_pushed->user_login,
-                'activity' => 'pushed to production',
-                'activity_date' => $date,
-            )
-        );
+        shift8_jenkins_activity_log($user_pushed->user_login, 'pushed to production');
     } else {
         echo 'error_detected : ';
         if (is_array($response['response'])) {
@@ -133,15 +122,13 @@ function shift8_jenkins_poll($user_pushed) {
     } 
 }
 // Setup the action that may be used as a one-off scheduled job
-add_action( 'shift8_jenkins_schedule_poll', 'shift8_jenkins_poll', 1, 1 );
+add_action( 'shift8_jenkins_schedule_poll', 'shift8_jenkins_poll', 10, 1 );
 
 // Get the log entriees 
 function shift8_jenkins_get_activity_log() {
     if (current_user_can('administrator')) {
         global $wpdb;
-        global $shift8_jenkins_table_name;
-
-        $table_name = $wpdb->prefix . $shift8_jenkins_table_name;
+        $table_name = $wpdb->prefix . S8JENKINS_TABLE;
         $activity_log_array = $wpdb->get_results("SELECT * FROM $table_name ORDER BY activity_date DESC");
         return $activity_log_array;
     } else {
@@ -151,31 +138,35 @@ function shift8_jenkins_get_activity_log() {
 
 // One time schedule action for jenkins poll
 function shift8_jenkins_schedule_push($schedule, $user_pushed) {
-    if (current_user_can('administrator') && shift8_jenkins_check_options()) {
-        global $wpdb;
-        global $shift8_jenkins_table_name;
-        $date = date('Y-m-d H:i:s');
+    if (current_user_can('administrator') && shift8_jenkins_check_options() && $schedule) {
         $schedule_human = Carbon::createFromTimestamp($schedule)->toDateTimeString();
 
-        // Write entry to the log for the scheduling portion
-        $wpdb->insert( 
-            $wpdb->prefix . $shift8_jenkins_table_name,
-            array( 
-                'user_name' => $user_pushed->user_login,
-                'activity' => 'scheduled push to production on ' . $schedule_human,
-                'activity_date' => $date,
-            )
-        );
-
         // Set the cron schedule
-        if ( ! wp_next_scheduled( 'shift8_jenkins_schedule_poll' ) ) {
-            wp_schedule_single_event( $shedule, 'shift8_jenkins_schedule_poll', array($user_pushed));
+        shift8_jenkins_activity_log($user_pushed->user_login, 'scheduled push for ' . $schedule_human);
+        if ( ! wp_next_scheduled( 'shift8_jenkins_schedule_poll', array ( $user_pushed ) ) ) {
+            wp_schedule_single_event( $schedule, 'shift8_jenkins_schedule_poll', array($user_pushed));
         } else {
-            wp_clear_scheduled_hook( 'shift8_jenkins_schedule_poll' );
-            wp_schedule_single_event( $shedule, 'shift8_jenkins_schedule_poll', array($user_pushed));
+            shift8_jenkins_activity_log($user_pushed->user_login, 'cleaning up previously scheduled push');
+            wp_unschedule_hook( 'shift8_jenkins_schedule_poll' );
+            wp_schedule_single_event( $schedule, 'shift8_jenkins_schedule_poll', array($user_pushed));
         }
-        echo 'Schedule initiated to push on ' . $schedule_human; 
+        // Display notice and log activity
+        echo 'Schedule initiated to push on ' . $schedule_human;
     } else {
         echo 'An unknown error occurred while scheduling the push.';
     }
+}
+
+// Function to handle activity logging
+function shift8_jenkins_activity_log($log_user, $log_activity) {
+    $log_date = Carbon::now()->format('Y-m-d H:i:s');
+    global $wpdb;
+    $wpdb->insert( 
+            $wpdb->prefix . S8JENKINS_TABLE,
+            array( 
+                'user_name' => sanitize_text_field($log_user),
+                'activity' => sanitize_text_field($log_activity),
+                'activity_date' => $log_date,
+            )
+        );
 }

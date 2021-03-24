@@ -19,9 +19,6 @@ require_once(plugin_dir_path(__FILE__).'components/enqueuing.php' );
 require_once(plugin_dir_path(__FILE__).'components/settings.php' );
 require_once(plugin_dir_path(__FILE__).'components/functions.php' );
 
-global $shift8_jenkins_table_name;
-$shift8_jenkins_table_name = 'jenkins_activity_log';
-
 // Admin welcome page
 if (!function_exists('shift8_main_page')) {
 	function shift8_main_page() {

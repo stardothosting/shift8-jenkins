@@ -61,3 +61,6 @@ You should monitor the Jenkins log to see if it is able to hit the site. Also mo
 = 2.0.1 =
 * Wordpress 5.7 compatibility
 * Ability to schedule push trigger with WP Cron
+* Updated activity log table schema, cleanup after deactivation, db version tracking
+* Centralized activity logging function
+* Cleanup wp cron scheduling
