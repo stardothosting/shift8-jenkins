@@ -4,18 +4,18 @@
 * Tags: jenkins, wordpress, wordpress automation, staging wordpress, staging, push, production push, jenkins push, wordpress deploy, wordpress build, build, deployment, deploy
 * Requires at least: 3.0.1
 * Tested up to: 6.2
-* Stable tag: 2.0.11
+* Stable tag: 2.0.12
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Plugin that allows you to trigger a Jenkins hook straight from the Wordpress interface. This is intended for end-users to trigger a "push" for jenkins to push a staging site to production (for example). For full instructions and an in-depth overview of how the plugin works, you can check out our detailed [blog post about this plugin](https://www.shift8web.ca/blog/wordpress-plugin-to-integrate-jenkins-build-api/).
+Plugin that allows you to trigger a Jenkins hook straight from the Wordpress interface. This is intended for end-users to trigger a "push" for jenkins to push a staging site to production (for example). For full instructions and an in-depth overview of how the plugin works, you can check out our detailed [blog post about this plugin](https://shift8web.ca/2017/12/wordpress-plugin-to-integrate-jenkins-build-api/).
 
 == Want to see the plugin in action? ==
 
 You can view three example sites where this plugin is live :
 
 - Example Site 1 : [Wordpress Hosting](https://www.stackstar.com "Wordpress Hosting")
-- Example Site 2 : [Web Design in Toronto](https://www.shift8web.ca "Web Design in Toronto")
+- Example Site 2 : [Web Design in Toronto](https://shift8web.ca "Web Design in Toronto")
 
 == Features ==
 
@@ -90,7 +90,11 @@ You should monitor the Jenkins log to see if it is able to hit the site. Also mo
 * Minor fix to set timezone in second delay calculation for scheduled pushes
 
 = 2.0.10 =
+* Minor fix to set delay seconds = 0 when immediate push
 
 = 2.0.11 =
 * Wordpress 6.2 compatibility
-* Minor fix to set delay seconds = 0 when immediate push
+
+= 2.0.12 =
+* Adjust readme
+
