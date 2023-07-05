@@ -42,40 +42,57 @@ function shift8_jenkins_push() {
     if (current_user_can('administrator') && shift8_jenkins_check_options()) {
         $user_pushed = wp_get_current_user();
         if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['action'] == 'shift8_jenkins_push' && $_GET['schedule'] == 'immediate') {
-            shift8_jenkins_poll($user_pushed);
+            $delay_seconds = 0;
+            shift8_jenkins_poll($user_pushed, $delay_seconds);
             die();
         } else if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['action'] == 'shift8_jenkins_push' && $_GET['schedule'] !== 'immediate') {
             switch ($_GET['schedule']) {
                 case 'tonight':
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->timestamp, $user_pushed);
+                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0);
+                    $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'tomorrow':
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(1, 'day')->timestamp, $user_pushed);
+                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(1, 'day');
+                    $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(1, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'two_days':
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(2, 'day')->timestamp, $user_pushed);
+                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(2, 'day');
+                    $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(2, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'three_days':
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(3, 'day')->timestamp, $user_pushed);
+                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(3, 'day');
+                    $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(3, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'four_days':
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(4, 'day')->timestamp, $user_pushed);
+                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(4, 'day');
+                    $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(4, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'five_days':
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(5, 'day')->timestamp, $user_pushed);
+                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(5, 'day');
+                    $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(5, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'six_days':
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(6, 'day')->timestamp, $user_pushed);
+                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(6, 'day');
+                    $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(6, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'seven_days':
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(7, 'day')->timestamp, $user_pushed);
+                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(7, 'day');
+                    $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(7, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 default:
@@ -91,9 +108,12 @@ function shift8_jenkins_push() {
 }
 
 // Handle the actual jenkins GET
-function shift8_jenkins_poll($user_pushed) {
+function shift8_jenkins_poll($user_pushed, $total_seconds) {
     $jenkins_user = esc_attr(get_option('shift8_jenkins_user'));
     $jenkins_api = esc_attr(get_option('shift8_jenkins_api'));
+    $jenkins_url = esc_attr(get_option('shift8_jenkins_url'));
+    $delay_seconds = '&delay=' . esc_attr($total_seconds) . 'secs';
+
     // Set headers for WP Remote get
     $headers = array(
         'Content-type: application/json',
@@ -101,7 +121,7 @@ function shift8_jenkins_poll($user_pushed) {
     );
 
     // Use WP Remote Get to poll jenkins
-    $response = wp_remote_get( esc_attr(get_option('shift8_jenkins_url')),
+    $response = wp_remote_get( $jenkins_url . $delay_seconds,
         array(
             'headers' => $headers,
             'httpversion' => '1.1',
@@ -116,8 +136,10 @@ function shift8_jenkins_poll($user_pushed) {
         echo 'error_detected : ';
         if (is_array($response['response'])) {
             echo $response['response']['code'] . ' - ' . $response['response']['message'];
+            shift8_jenkins_activity_log($user_pushed->user_login, 'error with push : ' . $response['response']['code'] . ' - ' . $response['response']['message']);
         } else {
             echo 'unknown';
+            shift8_jenkins_activity_log($user_pushed->user_login, 'error with push : unknown');
         }
     } 
 }
@@ -137,19 +159,14 @@ function shift8_jenkins_get_activity_log() {
 }
 
 // One time schedule action for jenkins poll
-function shift8_jenkins_schedule_push($schedule, $user_pushed) {
+function shift8_jenkins_schedule_push($schedule, $total_seconds, $user_pushed) {
     if (current_user_can('administrator') && shift8_jenkins_check_options() && $schedule) {
         $schedule_human = Carbon::createFromTimestamp($schedule)->toDateTimeString();
 
-        // Set the cron schedule
-        shift8_jenkins_activity_log($user_pushed->user_login, 'scheduled push for ' . $schedule_human);
-        if ( ! wp_next_scheduled( 'shift8_jenkins_schedule_poll', array ( $user_pushed ) ) ) {
-            wp_schedule_single_event( $schedule, 'shift8_jenkins_schedule_poll', array($user_pushed));
-        } else {
-            shift8_jenkins_activity_log($user_pushed->user_login, 'cleaning up previously scheduled push');
-            wp_unschedule_hook( 'shift8_jenkins_schedule_poll' );
-            wp_schedule_single_event( $schedule, 'shift8_jenkins_schedule_poll', array($user_pushed));
-        }
+        // Immediately push to jenkins but with a delay query string 
+        shift8_jenkins_activity_log($user_pushed->user_login, 'scheduled push for ' . $schedule_human . ' (' . $total_seconds . ' seconds)');
+        shift8_jenkins_poll($user_pushed, $total_seconds);
+
         // Display notice and log activity
         echo 'Schedule initiated to push on ' . $schedule_human;
     } else {

@@ -4,7 +4,7 @@
 * Tags: jenkins, wordpress, wordpress automation, staging wordpress, staging, push, production push, jenkins push, wordpress deploy, wordpress build, build, deployment, deploy
 * Requires at least: 3.0.1
 * Tested up to: 6.2
-* Stable tag: 2.0.4
+* Stable tag: 2.0.11
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -72,5 +72,25 @@ You should monitor the Jenkins log to see if it is able to hit the site. Also mo
 * Admin setting for api key changed to password input box type
 
 = 2.0.4 =
-* Wordpress 6.2 compatibility
+* Added activity log entry if scheduled push remote get fails
 
+= 2.0.5 =
+* Adjustment of log entry
+
+= 2.0.6 =
+* Immediately trigger a push for scheduled pushes, but with delay=seconds query string
+
+= 2.0.7 =
+* Minor fix for query string
+
+= 2.0.8 =
+* Minor fix for query string
+
+= 2.0.9 =
+* Minor fix to set timezone in second delay calculation for scheduled pushes
+
+= 2.0.10 =
+
+= 2.0.11 =
+* Wordpress 6.2 compatibility
+* Minor fix to set delay seconds = 0 when immediate push
