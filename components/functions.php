@@ -54,45 +54,45 @@ function shift8_jenkins_push() {
                     die();
                     break;
                 case 'tomorrow':
-                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(1, 'day');
+                    $schedule = Carbon::now('America/Toronto')->setTime(03,00,0)->add(1, 'day');
                     $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(1, 'day')->timestamp, $total_seconds, $user_pushed);
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(03,00,0)->add(1, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'two_days':
-                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(2, 'day');
+                    $schedule = Carbon::now('America/Toronto')->setTime(03,00,0)->add(2, 'day');
                     $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(2, 'day')->timestamp, $total_seconds, $user_pushed);
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(03,00,0)->add(2, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'three_days':
-                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(3, 'day');
+                    $schedule = Carbon::now('America/Toronto')->setTime(03,00,0)->add(3, 'day');
                     $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(3, 'day')->timestamp, $total_seconds, $user_pushed);
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(03,00,0)->add(3, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'four_days':
-                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(4, 'day');
+                    $schedule = Carbon::now('America/Toronto')->setTime(03,00,0)->add(4, 'day');
                     $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(4, 'day')->timestamp, $total_seconds, $user_pushed);
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(03,00,0)->add(4, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'five_days':
-                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(5, 'day');
+                    $schedule = Carbon::now('America/Toronto')->setTime(03,00,0)->add(5, 'day');
                     $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(5, 'day')->timestamp, $total_seconds, $user_pushed);
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(03,00,0)->add(5, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'six_days':
-                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(6, 'day');
+                    $schedule = Carbon::now('America/Toronto')->setTime(03,00,0)->add(6, 'day');
                     $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(6, 'day')->timestamp, $total_seconds, $user_pushed);
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(03,00,0)->add(6, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 case 'seven_days':
-                    $schedule = Carbon::now('America/Toronto')->setTime(23,30,0)->add(7, 'day');
+                    $schedule = Carbon::now('America/Toronto')->setTime(03,00,0)->add(7, 'day');
                     $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
-                    shift8_jenkins_schedule_push(Carbon::now()->setTime(23,30,0)->add(7, 'day')->timestamp, $total_seconds, $user_pushed);
+                    shift8_jenkins_schedule_push(Carbon::now()->setTime(03,00,0)->add(7, 'day')->timestamp, $total_seconds, $user_pushed);
                     die();
                     break;
                 default:
