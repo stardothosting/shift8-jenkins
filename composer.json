@@ -12,5 +12,10 @@
     "require": {
         "nesbot/carbon": "^2.46",
         "symfony/polyfill-mbstring": "1.20.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true
+        }
     }
 }
