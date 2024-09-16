@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 Jenkins Integration
  * Plugin URI: https://github.com/stardothosting/shift8-jenkins
  * Description: Plugin that allows you to trigger a Jenkins hook straight from the Wordpress interface. This is intended for end-users to trigger a "push" for jenkins to push a staging site (for example) to production
- * Version: 2.0.15
+ * Version: 2.0.16
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -82,8 +82,8 @@ function shift8_jenkins_settings_page() {
 		</div>
 	<div class="shift8-jenkins-box">
 		  <select id="shift8-jenkins-push-schedule" name="shift8_jenkins_push_schedule">
-		    <!--<option value="immediate">Push Immediately</option>-->
-		    <option value="tonight">Tonight</option>
+		    <option value="immediate">Push Immediately</option>
+		    <!--<option value="tonight">Tonight</option>-->
 		    <option value="tomorrow">Tomorrow</option>
 		    <option value="two_days">Two Days from now</option>
 		    <option value="three_days">Three Days from now</option>

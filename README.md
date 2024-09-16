@@ -4,7 +4,7 @@
 * Tags: jenkins, wordpress, wordpress automation, staging wordpress, staging, push, production push, jenkins push, wordpress deploy, wordpress build, build, deployment, deploy
 * Requires at least: 3.0.1
 * Tested up to: 6.4
-* Stable tag: 2.0.15
+* Stable tag: 2.0.16
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -107,3 +107,6 @@ You should monitor the Jenkins log to see if it is able to hit the site. Also mo
 
 ### 2.0.15
 * Bug fixes
+
+### 2.0.16
+* Bug fix
