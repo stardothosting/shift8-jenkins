@@ -41,12 +41,18 @@ add_action( 'wp_ajax_shift8_jenkins_push', 'shift8_jenkins_push' );
 function shift8_jenkins_push() {
     if (current_user_can('administrator') && shift8_jenkins_check_options()) {
         $user_pushed = wp_get_current_user();
-        if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['action'] == 'shift8_jenkins_push' && $_GET['schedule'] == 'immediate') {
+        
+        // Sanitize input parameters
+        $nonce = sanitize_text_field($_GET['_wpnonce'] ?? '');
+        $action = sanitize_text_field($_GET['action'] ?? '');
+        $schedule = sanitize_text_field($_GET['schedule'] ?? '');
+        
+        if ( wp_verify_nonce($nonce, 'process') && $action == 'shift8_jenkins_push' && $schedule == 'immediate') {
             $delay_seconds = 0;
             shift8_jenkins_poll($user_pushed, $delay_seconds);
             die();
-        } else if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['action'] == 'shift8_jenkins_push' && $_GET['schedule'] !== 'immediate') {
-            switch ($_GET['schedule']) {
+        } else if ( wp_verify_nonce($nonce, 'process') && $action == 'shift8_jenkins_push' && $schedule !== 'immediate') {
+            switch ($schedule) {
                 case 'tonight':
                     $schedule = Carbon::now('America/Toronto')->setTime(23,30,0);
                     $total_seconds = $schedule->diffInSeconds(Carbon::now('America/Toronto'));
@@ -129,17 +135,17 @@ function shift8_jenkins_poll($user_pushed, $total_seconds) {
         )
     );
     if (is_array($response) && $response['response']['code'] == '201') {
-        $date = date('Y-m-d H:i:s');
-        echo $date . ' / ' . $user_pushed->user_login . ' : Pushed to production';
+        $date = current_time('Y-m-d H:i:s');
+        echo esc_html($date . ' / ' . $user_pushed->user_login . ' : Pushed to production');
         shift8_jenkins_activity_log($user_pushed->user_login, 'pushed to production');
     } else {
-        echo 'error_detected : ';
-        if (is_array($response['response'])) {
-            echo $response['response']['code'] . ' - ' . $response['response']['message'];
-            shift8_jenkins_activity_log($user_pushed->user_login, 'error with push : ' . $response['response']['code'] . ' - ' . $response['response']['message']);
+        echo 'Error: Jenkins push failed. Please check your settings and try again.';
+        if (is_array($response) && isset($response['response'])) {
+            // Log detailed error for debugging but don't expose it to users
+            $error_details = $response['response']['code'] . ' - ' . $response['response']['message'];
+            shift8_jenkins_activity_log($user_pushed->user_login, 'error with push : ' . sanitize_text_field($error_details));
         } else {
-            echo 'unknown';
-            shift8_jenkins_activity_log($user_pushed->user_login, 'error with push : unknown');
+            shift8_jenkins_activity_log($user_pushed->user_login, 'error with push : unknown response format');
         }
     } 
 }
@@ -168,7 +174,7 @@ function shift8_jenkins_schedule_push($schedule, $total_seconds, $user_pushed) {
         shift8_jenkins_poll($user_pushed, $total_seconds);
 
         // Display notice and log activity
-        echo 'Schedule initiated to push on ' . $schedule_human;
+        echo esc_html('Schedule initiated to push on ' . $schedule_human);
     } else {
         echo 'An unknown error occurred while scheduling the push.';
     }

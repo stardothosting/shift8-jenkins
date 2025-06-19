@@ -118,38 +118,44 @@ register_deactivation_hook( S8JENKINS_FILE, 'shift8_jenkins_deactivation' );
 
 // Validate Input for Admin options
 function shift8_jenkins_url_validate($data){
-	if(filter_var($data, FILTER_VALIDATE_URL,FILTER_FLAG_QUERY_REQUIRED)) {
-   		return $data;
+	$sanitized_url = esc_url_raw($data);
+	if(!empty($sanitized_url) && filter_var($sanitized_url, FILTER_VALIDATE_URL) && strlen($sanitized_url) <= 500) {
+   		return $sanitized_url;
    	} else {
    		add_settings_error(
             'shift8_jenkins_url',
             'shift8-jenkins-notice',
-            'You did not enter a valid URL for the Jenkins push',
+            'You did not enter a valid URL for the Jenkins push (maximum 500 characters)',
             'error');
+   		return '';
    	}
 }
 
 function shift8_jenkins_user_validate($data){
-	if(filter_var($data, FILTER_SANITIZE_STRING)) {
-   		return $data;
+	$sanitized_data = sanitize_text_field($data);
+	if(!empty($sanitized_data) && strlen($sanitized_data) <= 100) {
+   		return $sanitized_data;
    	} else {
    		add_settings_error(
             'shift8_jenkins_user',
             'shift8-jenkins-notice',
-            'You did not enter a valid string for the username field',
+            'You did not enter a valid username (maximum 100 characters)',
             'error');
+   		return '';
    	}
 }
 
 function shift8_jenkins_api_validate($data){
-	if(filter_var($data, FILTER_SANITIZE_STRING)) {
-   		return $data;
+	$sanitized_data = sanitize_text_field($data);
+	if(!empty($sanitized_data) && strlen($sanitized_data) <= 200) {
+   		return $sanitized_data;
    	} else {
    		add_settings_error(
             'shift8_jenkins_api',
             'shift8-jenkins-notice',
-            'You did not enter a valid string for the API field',
+            'You did not enter a valid API key (maximum 200 characters)',
             'error');
+   		return '';
    	}
 }
 
